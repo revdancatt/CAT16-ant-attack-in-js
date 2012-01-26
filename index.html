@@ -1,0 +1,33 @@
+<html>
+<head>
+	<title>Ant Attack Test</title>
+	<style>
+		body {
+			background: #efefef;
+		}
+		#mapholder {
+		    width: 128px;
+		    height: 128px;
+		}
+		#map {
+		    display: none;
+		}
+	</style>
+</head>
+<body>
+
+	<div id=map>
+	    <img id=level />
+	</div>
+
+	<canvas id=mapholder width=128 height=128>
+	</canvas>
+
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/control.js"></script>
+	<script src="js/Three.js"></script>
+	<script>
+	    control.init();
+	</script>
+</body>
+</html>
