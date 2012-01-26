@@ -1,6 +1,8 @@
 Ant Attack test with THREE.js
 =============================
 
+![Antchester Screenshot](http://farm8.staticflickr.com/7003/6766550441_9523f3e24e_z.jpg)
+
 This is an atempt to learn how to use THREE.js and getting to play with Ant Attack code once more.
 
 *This will probably not work on your browser*
