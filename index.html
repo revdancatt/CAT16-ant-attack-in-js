@@ -13,6 +13,14 @@
 		#map {
 		    display: none;
 		}
+		#popup {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			text-align: center;
+			font-family: monospace;
+		}
 	</style>
 </head>
 <body>
@@ -23,6 +31,10 @@
 
 	<canvas id=mapholder width=128 height=128>
 	</canvas>
+
+	<div id=popup>
+		Ant Attack WebGL test, <a href="https://github.com/revdancatt/Ant-Attack-in-JS--with-THREE.js-">source code</a>.
+	</div>
 
 	<script src="js/jquery-1.7.1.min.js"></script>
 	<script src="js/control.js"></script>
