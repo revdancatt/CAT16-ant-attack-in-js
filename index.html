@@ -27,8 +27,21 @@
 	<script src="js/jquery-1.7.1.min.js"></script>
 	<script src="js/control.js"></script>
 	<script src="js/Three.js"></script>
+	<script src="js/Stats.js"></script>
 	<script>
 	    control.init();
+		var stats = new Stats();
+
+		// Align top-left
+		stats.getDomElement().style.position = 'absolute';
+		stats.getDomElement().style.left = '0px';
+		stats.getDomElement().style.top = '0px';
+
+		document.body.appendChild( stats.getDomElement() );
+
+		setInterval( function () {
+		    stats.update();
+		}, 1000 / 60 );
 	</script>
 </body>
 </html>
