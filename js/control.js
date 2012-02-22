@@ -12,8 +12,6 @@ control = {
 
 	init: function() {
 		
-        this.canvas = $('#mapholder')[0];
-        
         //  create a scene ;)
         control.scene                   = new THREE.Scene();
         control.scene.fog               = new THREE.Fog( 0xefefef, 1, 15000 );
@@ -34,7 +32,6 @@ control = {
         control.renderer.sortObjects    = false;
         document.body.appendChild( control.renderer.domElement );
 
-
         this.loadLevel();
 
 
@@ -42,52 +39,29 @@ control = {
 
     loadLevel: function() {
         
-        $('#level').remove();
-        var l = $('<img>').attr('id', 'level');
-        l.load(control.parseLevel);
-        $('#map').append(l);
-        $('#level').attr('src', 'maps/antchester/level' + control.currentLevel + '.bmp');
-
-    },
-
-    parseLevel: function() {
-
-
         var geometry = new THREE.CubeGeometry( 100, 100, 100 );
         var mesh = new THREE.Mesh( geometry );
 
-        var ctx = control.canvas.getContext('2d');
-        ctx.drawImage($('#level')[0], 0, 0);
-
-
-        for (var y = 0; y < ctx.canvas.height; y++) {
-            for (var x = 0; x < ctx.canvas.width; x++) {
-                var imageData = ctx.getImageData(x, y, 1, 1);
-                var total = imageData.data[0] + imageData.data[1] + imageData.data[2];
-                if (total === 0) {
-                    mesh.position.x= (x*100) - (ctx.canvas.width * 50);
-                    mesh.position.y= (control.currentLevel*100);
-                    mesh.position.z= (y*100) - (ctx.canvas.height * 50);
-                    THREE.GeometryUtils.merge(control.mergedGeo, mesh);
-                    control.counter++;
+        for (var z in map) {
+            for (var y in map[z]) {
+                for (var x in map[z][y]) {
+                    if (map[z][y][x] == '#') {
+                        mesh.position.x= (x*100) - (map[z][y].length * 50);
+                        mesh.position.y= (z*100);
+                        mesh.position.z= (y*100) - (map[z].length * 50);
+                        THREE.GeometryUtils.merge(control.mergedGeo, mesh);
+                        control.counter++;
+                    }
                 }
             }
         }
 
-        control.currentLevel++;
-        if (control.currentLevel <= control.maxLevel) {
-            control.loadLevel();
-        } else {
-            control.finishMap();
-        }
+        control.finishMap();
 
     },
 
     finishMap: function() {
         
-        $('#map').remove();
-        $('#mapholder').remove();
-
         var material    = new THREE.MeshLambertMaterial( { color: 0x999999, shading: 3 } );
         control.mergedGeo.computeFaceNormals();
         var group   = new THREE.Mesh( control.mergedGeo, material );
