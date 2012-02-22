@@ -1,0 +1,45 @@
+<html>
+<head>
+	<title>Map Encoder</title>
+	<style>
+		body {
+			background: #efefef;
+			margin: 0;
+			font-family: monospace;
+		}
+		#mapholder {
+		    width: 128px;
+		    height: 128px;
+		}
+		#map {
+		    display: none;
+		}
+		#popup {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			text-align: center;
+			font-family: monospace;
+		}
+	</style>
+</head>
+<body>
+
+	<div id=result>
+	</div>
+
+	<div id=map>
+	    <img id=level />
+	</div>
+
+	<canvas id=mapholder width=128 height=128>
+	</canvas>
+
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/encoder.js"></script>
+	<script>
+	    control.init();
+	</script>
+</body>
+</html>
