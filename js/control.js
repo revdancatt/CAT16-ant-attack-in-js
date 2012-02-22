@@ -14,7 +14,7 @@ control = {
 		
         //  create a scene ;)
         control.scene                   = new THREE.Scene();
-        control.scene.fog               = new THREE.Fog( 0xefefef, 1, 15000 );
+        control.scene.fog               = new THREE.Fog( 0xefefef, 1, 10000 );
 
         //  add the camera
         control.camera                  = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 20000 );
@@ -39,8 +39,18 @@ control = {
 
     loadLevel: function() {
         
-        var geometry = new THREE.CubeGeometry( 100, 100, 100 );
-        var mesh = new THREE.Mesh( geometry );
+        var materials = [
+                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside2.png"), color: 0xFFFFFF, shading: 3}), // right
+                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside2.png"), color: 0xFFFFFF, shading: 3}), // left
+                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside2.png"), color: 0xFFFFFF, shading: 3}), //top
+                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside.png"), color: 0xFFFFFF, shading: 3}), // bottom
+                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside.png"), color: 0xFFFFFF, shading: 3}), // back
+                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside.png"), color: 0xFFFFFF, shading: 3}) // front
+        ];
+        var material    = new THREE.MeshLambertMaterial( { color: 0xFF0000, shading: 3 } );
+
+        var cube = new THREE.CubeGeometry( 100, 100, 100, 1, 1, 1, materials );
+        var mesh = new THREE.Mesh( cube );
 
         for (var z in map) {
             for (var y in map[z]) {
@@ -62,9 +72,7 @@ control = {
 
     finishMap: function() {
         
-        var material    = new THREE.MeshLambertMaterial( { color: 0x999999, shading: 3 } );
-        control.mergedGeo.computeFaceNormals();
-        var group   = new THREE.Mesh( control.mergedGeo, material );
+        var group   = new THREE.Mesh( control.mergedGeo, new THREE.MeshFaceMaterial() );
         group.matrixAutoUpdate = false;
         group.updateMatrix();
         control.scene.addObject( group );
