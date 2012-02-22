@@ -21,8 +21,12 @@ control = {
         control.scene.add( control.camera );
 
         //  Now a light so we can see stuff
-        control.light = new THREE.PointLight( 0xFFFFFF );
-        control.light.position.set( -3600, 4800, 8000 );
+        control.light = new THREE.DirectionalLight( 0x999999 );
+        control.light.position.set( -3600, 4800, 8000).normalize();
+        control.scene.add( control.light );
+
+        control.light = new THREE.DirectionalLight( 0xefefef );
+        control.light.position.set( 3600, 8000, -6000).normalize();
         control.scene.add( control.light );
 
         control.mergedGeo               = new THREE.Geometry();
