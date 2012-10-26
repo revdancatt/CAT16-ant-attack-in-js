@@ -9,7 +9,7 @@ This is an atempt to learn how to use THREE.js and getting to play with Ant Atta
 
 To crash your browser or see something dramatically not work, go here...
 
-http://revdancatt.github.com/Ant-Attack-in-JS--with-THREE.js-/
+http://revdancatt.github.com/CAT16-ant-attack-in-js
 
 ...it's trying to use WebGL, which your browser may or maynot have.
 
