@@ -5,7 +5,7 @@ Ant Attack test with THREE.js
 
 Browser based version of Ant Attack 3D, using Three.js
 
-http://revdancatt.github.com/CAT16-ant-attack-in-js
+Running: http://revdancatt.github.com/CAT16-ant-attack-in-js
 
 
 Now With
