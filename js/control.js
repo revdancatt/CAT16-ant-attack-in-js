@@ -9,7 +9,7 @@ control = {
     currentLevel: 0,
     maxLevel: 6,
     counter: 0,
-    demoMode: false,
+    demoMode: true,
     velocity: {turn: 0.0, move: 0.0, strafe: 0.0, fly: 0.0},
     orientation: {x: 0.0, y: 0.0, z: 0.0},
     keyControls: {
@@ -64,20 +64,31 @@ control = {
         //  for the moment.
         $(document).bind('keydown', function(e) {
 
-            if (e.keyCode == 39 || e.keyCode == 68) control.keyControls.isRightDown = true;     //  right key
-            if (e.keyCode == 37 || e.keyCode == 65) control.keyControls.isLeftDown = true;      //  left key
-            if (e.keyCode == 38 || e.keyCode == 87) control.keyControls.isForwardDown = true;   //  forward key
-            if (e.keyCode == 40 || e.keyCode == 83) control.keyControls.isBackwardDown = true;  //  backward key
-            if (e.keyCode == 32) control.keyControls.isUpDown = true;                           //  up key
-            if (e.keyCode == 88) control.keyControls.isDownDown = true;                         //  down key
-            if (e.keyCode == 81) control.keyControls.isStrafeLeftDown = true;                   //  strafe left
-            if (e.keyCode == 69) control.keyControls.isStrafeRightDown = true;                  //  strafe right
+            if (e.keyCode == 39 || e.keyCode == 68) {control.keyControls.isRightDown = true; control.turnDemoOff() }     //  right key
+            if (e.keyCode == 37 || e.keyCode == 65) {control.keyControls.isLeftDown = true; control.turnDemoOff() }      //  left key
+            if (e.keyCode == 38 || e.keyCode == 87) {control.keyControls.isForwardDown = true; control.turnDemoOff() }   //  forward key
+            if (e.keyCode == 40 || e.keyCode == 83) {control.keyControls.isBackwardDown = true; control.turnDemoOff() }  //  backward key
+            if (e.keyCode == 32) {control.keyControls.isUpDown = true; control.turnDemoOff() }                           //  up key
+            if (e.keyCode == 88) {control.keyControls.isDownDown = true; control.turnDemoOff() }                         //  down key
+            if (e.keyCode == 81) {control.keyControls.isStrafeLeftDown = true; control.turnDemoOff() }                   //  strafe left
+            if (e.keyCode == 69) {control.keyControls.isStrafeRightDown = true; control.turnDemoOff() }                  //  strafe right
+
+            //  toggle the demo
+            if (e.keyCode == 70) {
+                if (control.demoMode) {
+                    control.turnDemoOff();
+                } else {
+                    control.demoMode = true;
+                }
+            }
+
+            console.log(e.keyCode);
 
         });
 
         $(document).bind('keyup', function(e) {
 
-            if (e.keyCode == 39 || e.keyCode == 68) control.keyControls.isRightDown = false;    //  right key
+            if (e.keyCode == 39 || e.keyCode == 68) control.keyControls.isRightDown = false;   //  right key
             if (e.keyCode == 37 || e.keyCode == 65) control.keyControls.isLeftDown = false;     //  left key
             if (e.keyCode == 38 || e.keyCode == 87) control.keyControls.isForwardDown = false;  //  forward key
             if (e.keyCode == 40 || e.keyCode == 83) control.keyControls.isBackwardDown = false; //  backward key
@@ -85,6 +96,7 @@ control = {
             if (e.keyCode == 88) control.keyControls.isDownDown = false;                        //  down key
             if (e.keyCode == 81) control.keyControls.isStrafeLeftDown = false;                  //  strafe left
             if (e.keyCode == 69) control.keyControls.isStrafeRightDown = false;                 //  strafe right
+
 
         });
 
@@ -132,6 +144,23 @@ control = {
         control.scene.addObject( group );
 
         control.animate();
+    },
+
+    turnDemoOff: function() {
+
+        //  if the demo is currently on then we need to reset the position
+        //  and turn it off
+        if (this.demoMode) {
+            this.velocity = {turn: 0.0, move: 0.0, strafe: 0.0, fly: 0.0};
+            this.orientation = {x: 0.0, y: 0.0, z: 0.0};
+            control.camera.rotation.x = 0;
+            control.camera.rotation.z = 0;
+            control.camera.position.x = -1200;
+            control.camera.position.y = 160;
+            control.camera.position.z = 6400;
+            this.demoMode = false;
+        }
+
     },
 
 	animate: function() {
