@@ -1,7 +1,7 @@
 ![Antchester Screenshot](http://cattopus23.com/img/panel-CAT16.png)
 
-Ant Attack test with THREE.js
-=============================
+CAT16 Ant Attack test with THREE.js
+===================================
 
 Browser based version of Ant Attack 3D, using Three.js
 
