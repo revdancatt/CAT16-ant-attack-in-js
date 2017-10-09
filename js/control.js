@@ -24,6 +24,7 @@ control = {
     },
     grabScreenshot: false,
     imgData: null,
+    hidden: false,
 
 	init: function() {
 
@@ -98,6 +99,17 @@ control = {
             if (e.keyCode == 81) control.keyControls.isStrafeLeftDown = false;                  //  strafe left
             if (e.keyCode == 69) control.keyControls.isStrafeRightDown = false;                 //  strafe right
 
+            if (e.keyCode == 85) {
+              if (control.hidden == false) {
+                $('.hideme').css("display", "none");
+                $(stats.getDomElement()).css("display", "none");
+                control.hidden = true;
+              } else {
+                control.hidden = false;
+                $('.hideme').css("display", "inherit");
+                $(stats.getDomElement()).css("display", "inherit");
+              }
+            };
 
         });
 
