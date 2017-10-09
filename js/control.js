@@ -1,8 +1,8 @@
 control = {
-	
+
     renderer: null,
     scene: null,
-	camera: null,
+	   camera: null,
     light: null,
     mergedGeo: null,
     canvas: null,
@@ -22,9 +22,11 @@ control = {
         isStrafeLeftDown: false,
         isStrafeRightDown: false
     },
+    grabScreenshot: false,
+    imgData: null,
 
 	init: function() {
-		
+
         //  create a scene ;)
         control.scene                   = new THREE.Scene();
         control.scene.fog               = new THREE.Fog( 0xefefef, 1, 10000 );
@@ -42,18 +44,19 @@ control = {
         control.camera.position.z = 6400;
 
         //  Now a light so we can see stuff
-        control.light = new THREE.DirectionalLight( 0x999999 );
+        control.light = new THREE.DirectionalLight( 0xCCCCCC );
         control.light.position.set( -3600, 4800, 8000).normalize();
         control.scene.add( control.light );
 
-        control.light = new THREE.DirectionalLight( 0xefefef );
+        control.light = new THREE.DirectionalLight( 0xffffff );
         control.light.position.set( 3600, 8000, -6000).normalize();
         control.scene.add( control.light );
 
         control.mergedGeo               = new THREE.Geometry();
 
-        control.renderer                = new THREE.WebGLRenderer();
+        control.renderer                = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
         control.renderer.setSize( window.innerWidth, window.innerHeight );
+        control.renderer.setClearColor( 0xffffff );
         control.renderer.sortObjects    = false;
         document.body.appendChild( control.renderer.domElement );
 
@@ -82,8 +85,6 @@ control = {
                 }
             }
 
-            console.log(e.keyCode);
-
         });
 
         $(document).bind('keyup', function(e) {
@@ -104,46 +105,38 @@ control = {
 
 
     loadLevel: function() {
-        
-        var materials = [
-                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside2.png"), color: 0xFFFFFF, shading: 3}), // right
-                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside2.png"), color: 0xFFFFFF, shading: 3}), // left
-                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside2.png"), color: 0xFFFFFF, shading: 3}), //top
-                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside.png"), color: 0xFFFFFF, shading: 3}), // bottom
-                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside.png"), color: 0xFFFFFF, shading: 3}), // back
-                new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("imgs/cubeside.png"), color: 0xFFFFFF, shading: 3}) // front
-        ];
-        var material    = new THREE.MeshLambertMaterial( { color: 0xFF0000, shading: 3 } );
 
-        var cube = new THREE.CubeGeometry( 100, 100, 100, 1, 1, 1, materials );
-        var mesh = new THREE.Mesh( cube );
+      var mergedGeometry = new THREE.Geometry();
+      var material    = new THREE.MeshLambertMaterial( {map: new THREE.TextureLoader().load( "imgs/cubeside2.png" ), color: 0xFFFFFF, flatShading: true } );
+      var geometry = new THREE.BoxGeometry( 100, 100, 100 );
 
-        for (var z in map) {
-            for (var y in map[z]) {
-                for (var x in map[z][y]) {
-                    if (map[z][y][x] == '#') {
-                        mesh.position.x= (x*100) - (map[z][y].length * 50);
-                        mesh.position.y= (z*100);
-                        mesh.position.z= (y*100) - (map[z].length * 50);
-                        THREE.GeometryUtils.merge(control.mergedGeo, mesh);
-                        control.counter++;
-                    }
-                }
-            }
-        }
+      for (var z in map) {
+          for (var y in map[z]) {
+              for (var x in map[z][y]) {
+                  if (map[z][y][x] == '#') {
+                      var nx = (x*100) - (map[z][y].length * 50);
+                      var ny = (z*100);
+                      var nz = (y*100) - (map[z].length * 50);
+                      geometry.translate(nx, ny, nz);
+                      mergedGeometry.merge(geometry);
+                      geometry.translate(-nx, -ny, -nz);
+                  }
+              }
+          }
+      }
 
-        control.finishMap();
+      control.mergedGeo = new THREE.Mesh(mergedGeometry, material);
+      control.mergedGeo.updateMatrix();
+      control.scene.add( control.mergedGeo );
+
+      control.finishMap();
 
     },
 
     finishMap: function() {
-        
-        var group   = new THREE.Mesh( control.mergedGeo, new THREE.MeshFaceMaterial() );
-        group.matrixAutoUpdate = false;
-        group.updateMatrix();
-        control.scene.addObject( group );
 
         control.animate();
+
     },
 
     turnDemoOff: function() {
@@ -191,12 +184,12 @@ control = {
         //  If we are turning left or right increase the velocity in that
         //  direction
         if (control.keyControls.isLeftDown) {
-            control.velocity.turn++;
+            control.velocity.turn += 0.2;
             if (control.velocity.turn > maxturn) control.velocity.turn = maxturn;
         }
 
         if (control.keyControls.isRightDown) {
-            control.velocity.turn--;
+            control.velocity.turn -= 0.2;
             if (control.velocity.turn < -maxturn) control.velocity.turn = -maxturn;
         }
 
@@ -243,11 +236,11 @@ control = {
         control.orientation.y+=control.velocity.turn;
 
         control.render();
-		
+
 	},
 
 	render: function() {
-		
+
 
         //  If we are in demo flyover mode then move the camera around.
         if (control.demoMode) {
@@ -267,8 +260,8 @@ control = {
         } else {
 
             //  turn the camera
-            control.camera.rotation.setY(control.orientation.y*(Math.PI/180));
-
+            //control.camera.rotateY(control.orientation.y*(Math.PI/180)/1000);
+            control.camera.rotateY(control.velocity.turn*(Math.PI/180));
             //  move the camera. Fortunately THREE makes this very easy
             //  with the translates being local to the camera and not the
             //  world in general.
@@ -290,7 +283,7 @@ control = {
             //  orientation
 
 
-            
+
             //  but to start with we'll stop the using going down thru the floor
             if (control.camera.position.y < 160) control.camera.position.y = 160;
 
@@ -300,6 +293,10 @@ control = {
         $('#status').html('x: ' + parseInt(control.camera.position.x, 10) + ' y:' + parseInt(control.camera.position.y, 10) + ' z: ' + parseInt(control.camera.position.z, 10));
 
         control.renderer.render( control.scene, control.camera );
+        if(control.grabScreenshot == true){
+            control.imgData = control.renderer.domElement.toDataURL("image/png");
+            control.grabScreenshot = false;
+        }
 	}
 
 };
